@@ -7,10 +7,23 @@ import { useApp } from '../context/AppContext.jsx';
 
 const MOCK_STATS = { total: 127, pending: 34, interview: 28, admitted: 18 };
 
+const STAT_BLOCKS = [
+  { label: '总申请', value: MOCK_STATS.total, emoji: '📋', filter: 'all' },
+  { label: '待审核', value: MOCK_STATS.pending, emoji: '⏳', filter: 'submitted' },
+  { label: '面试中', value: MOCK_STATS.interview, emoji: '🎤', filter: 'interview' },
+  { label: '已录取', value: MOCK_STATS.admitted, emoji: '✅', filter: 'admitted' },
+];
+
 export default function Admin() {
   const navigate = useNavigate();
   const { state } = useApp();
   const [activeTab, setActiveTab] = useState('clubs');
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  const handleStatClick = (filter) => {
+    setFilterStatus(filter);
+    setActiveTab('applications');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -26,19 +39,23 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* 统计 */}
+        {/* 统计 — 可点击筛选 */}
         <div className="grid grid-cols-4 gap-2">
-          {[
-            { label: '总申请', value: MOCK_STATS.total, emoji: '📋' },
-            { label: '待审核', value: MOCK_STATS.pending, emoji: '⏳' },
-            { label: '面试中', value: MOCK_STATS.interview, emoji: '🎤' },
-            { label: '已录取', value: MOCK_STATS.admitted, emoji: '✅' },
-          ].map(({ label, value, emoji }) => (
-            <div key={label} className="bg-white/10 rounded-xl p-2 text-center">
+          {STAT_BLOCKS.map(({ label, value, emoji, filter }) => (
+            <motion.button
+              key={label}
+              whileTap={{ scale: 0.93 }}
+              onClick={() => handleStatClick(filter)}
+              className={`rounded-xl p-2 text-center transition-all ${
+                activeTab === 'applications' && filterStatus === filter
+                  ? 'bg-white/30 ring-2 ring-white/60'
+                  : 'bg-white/10 hover:bg-white/20'
+              }`}
+            >
               <div className="text-lg mb-0.5">{emoji}</div>
               <p className="text-white font-black text-lg leading-none">{value}</p>
               <p className="text-white/60 text-[10px] mt-0.5">{label}</p>
-            </div>
+            </motion.button>
           ))}
         </div>
       </div>
@@ -102,14 +119,26 @@ export default function Admin() {
         )}
 
         {activeTab === 'applications' && (
-          <AdminApplications applications={state.applications} />
+          <AdminApplications
+            applications={state.applications}
+            filterStatus={filterStatus}
+            onClearFilter={() => setFilterStatus('all')}
+          />
         )}
       </div>
     </div>
   );
 }
 
-function AdminApplications({ applications }) {
+const STATUS_LABELS = {
+  all: '全部',
+  submitted: '待审核',
+  viewed: '已查看',
+  interview: '面试中',
+  admitted: '已录取',
+};
+
+function AdminApplications({ applications, filterStatus = 'all', onClearFilter }) {
   const navigate = useNavigate();
   const [statuses, setStatuses] = useState({});
 
@@ -143,9 +172,34 @@ function AdminApplications({ applications }) {
     setStatuses(prev => ({ ...prev, [id]: nextStatus }));
   };
 
+  const filtered = filterStatus === 'all'
+    ? mockApplicants
+    : mockApplicants.filter(a => (statuses[a.id] || a.status) === filterStatus);
+
   return (
     <div className="space-y-3">
-      {mockApplicants.map((app, i) => {
+      {/* 筛选状态提示 */}
+      {filterStatus !== 'all' && (
+        <div className="flex items-center justify-between bg-teal-50 border border-teal-100 rounded-xl px-3 py-2">
+          <span className="text-sm text-teal-700 font-medium">
+            当前筛选：{STATUS_LABELS[filterStatus]}
+            <span className="ml-1.5 text-teal-400 font-normal">（共 {filtered.length} 条）</span>
+          </span>
+          <button
+            onClick={onClearFilter}
+            className="text-xs text-teal-600 font-semibold bg-teal-100 hover:bg-teal-200 px-2.5 py-1 rounded-full transition-colors"
+          >
+            清除筛选
+          </button>
+        </div>
+      )}
+      {filtered.length === 0 && (
+        <div className="text-center py-12 text-gray-400 text-sm">
+          <p className="text-3xl mb-3">📭</p>
+          暂无{STATUS_LABELS[filterStatus]}的申请
+        </div>
+      )}
+      {filtered.map((app, i) => {
         const currentStatus = statuses[app.id] || app.status;
         const action = STATUS_ACTIONS[currentStatus];
         const score = app.matchScore;

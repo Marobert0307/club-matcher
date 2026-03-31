@@ -3,6 +3,7 @@ import { AppProvider } from './context/AppContext.jsx';
 import Layout from './components/Layout.jsx';
 
 import Home from './pages/Home.jsx';
+import Login from './pages/Login.jsx';
 import ProfileSetup from './pages/ProfileSetup.jsx';
 import Explore from './pages/Explore.jsx';
 import ClubDetail from './pages/ClubDetail.jsx';
@@ -20,6 +21,7 @@ export default function App() {
         <Routes>
           {/* 独立页面（无底部 Tab 栏） */}
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<ProfileSetup />} />
           <Route path="/club/:id" element={<ClubDetail />} />
           <Route path="/apply/:id" element={<Apply />} />

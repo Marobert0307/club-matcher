@@ -233,38 +233,37 @@ export default function Explore() {
         )}
       </div>
 
-      {/* 底部操作按钮 */}
+      {/* 底部操作按钮 + 滑动提示 */}
       {topClubs.length > 0 && (
-        <div className="flex items-center justify-center gap-5 pb-24 pt-4 flex-shrink-0">
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => handleSwipe('left', topClubs[0].id)}
-            className="w-14 h-14 bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-center hover:shadow-lg transition-shadow"
-          >
-            <X size={24} className="text-red-400" />
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => navigate(`/club/${topClubs[0].id}`)}
-            className="w-12 h-12 bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-center hover:shadow-lg transition-shadow"
-          >
-            <Info size={20} className="text-blue-400" />
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => handleSwipe('right', topClubs[0].id)}
-            className="w-14 h-14 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full shadow-md shadow-teal-200 flex items-center justify-center hover:shadow-lg hover:shadow-teal-300 transition-shadow"
-          >
-            <Heart size={24} className="text-white" />
-          </motion.button>
-        </div>
-      )}
-
-      {/* 滑动提示 */}
-      {topClubs.length > 0 && (
-        <div className="absolute bottom-20 left-0 right-0 flex justify-center gap-8 text-xs text-gray-300 pointer-events-none pb-1">
-          <span>← 跳过</span>
-          <span>收藏 →</span>
+        <div className="flex flex-col items-center pb-20 pt-2 flex-shrink-0 gap-3">
+          <div className="flex items-center justify-center gap-5">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => handleSwipe('left', topClubs[0].id)}
+              className="w-14 h-14 bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-center hover:shadow-lg transition-shadow"
+            >
+              <X size={24} className="text-red-400" />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => navigate(`/club/${topClubs[0].id}`)}
+              className="w-12 h-12 bg-white rounded-full shadow-md border border-gray-100 flex items-center justify-center hover:shadow-lg transition-shadow"
+            >
+              <Info size={20} className="text-blue-400" />
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => handleSwipe('right', topClubs[0].id)}
+              className="w-14 h-14 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full shadow-md shadow-teal-200 flex items-center justify-center hover:shadow-lg hover:shadow-teal-300 transition-shadow"
+            >
+              <Heart size={24} className="text-white" />
+            </motion.button>
+          </div>
+          {/* 滑动提示文字 */}
+          <div className="flex items-center justify-between w-64">
+            <span className="text-sm font-medium text-red-300">← 左滑跳过</span>
+            <span className="text-sm font-medium text-teal-400">右滑收藏 →</span>
+          </div>
         </div>
       )}
     </div>

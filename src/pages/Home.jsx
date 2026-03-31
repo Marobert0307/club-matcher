@@ -51,14 +51,14 @@ export default function Home() {
           <div className="flex flex-col gap-3">
             <motion.button
               whileTap={{ scale: 0.97 }}
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate('/login?role=student')}
               className="w-full bg-gradient-to-r from-teal-500 to-teal-600 text-white py-4 rounded-2xl font-bold text-base shadow-lg shadow-teal-200 hover:shadow-teal-300 transition-shadow"
             >
               🎓 我是新生，找社团
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.97 }}
-              onClick={() => navigate('/admin')}
+              onClick={() => navigate('/login?role=admin')}
               className="w-full bg-white text-gray-700 py-4 rounded-2xl font-bold text-base border border-gray-200 hover:border-gray-300 transition-colors"
             >
               🏢 我是社团负责人
