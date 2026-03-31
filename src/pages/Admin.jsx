@@ -138,23 +138,47 @@ const STATUS_LABELS = {
   admitted: '已录取',
 };
 
+const NAMES = ['张小明','李梅','王强','刘婷','陈杰','赵雷','孙悦','周婷','吴昊','郑芳','冯磊','蒋颖','韩冰','杨洋','朱莉','秦刚','许诺','曹阳','邓超','林夏'];
+const COLLEGES = ['计算机学院','艺术学院','工学院','文学院','体育学院','经济学院','外语学院','理学院','医学院','法学院'];
+const CLUB_NAMES = ['篮球社','摄影社','编程与AI研究会','吉他社','羽毛球社','话剧社','辩论队','围棋社','公益联盟','书法社'];
+const TIMES = ['今天 10:23','今天 09:15','昨天 18:30','昨天 14:20','2天前','3天前','4天前','5天前','本周一','上周五'];
+
+function genMock() {
+  const list = [];
+  // submitted: 34, viewed: 47, interview: 28, admitted: 18 → total: 127
+  const dist = [
+    ...Array(34).fill('submitted'),
+    ...Array(47).fill('viewed'),
+    ...Array(28).fill('interview'),
+    ...Array(18).fill('admitted'),
+  ];
+  dist.forEach((status, i) => {
+    list.push({
+      id: i + 1,
+      name: NAMES[i % NAMES.length],
+      college: COLLEGES[i % COLLEGES.length],
+      clubName: CLUB_NAMES[i % CLUB_NAMES.length],
+      matchScore: 60 + ((i * 7 + 13) % 38),
+      time: TIMES[i % TIMES.length],
+      status,
+    });
+  });
+  return list;
+}
+
+const BASE_MOCK = genMock();
+
 function AdminApplications({ applications, filterStatus = 'all', onClearFilter }) {
-  const navigate = useNavigate();
   const [statuses, setStatuses] = useState({});
 
   const mockApplicants = [
-    { id: 1, name: '张小明', college: '计算机学院', clubId: 1, clubName: '篮球社', matchScore: 88, time: '今天 10:23', status: 'submitted' },
-    { id: 2, name: '李梅', college: '艺术学院', clubId: 2, clubName: '摄影社', matchScore: 92, time: '今天 09:15', status: 'viewed' },
-    { id: 3, name: '王强', college: '工学院', clubId: 3, clubName: '编程与AI研究会', matchScore: 95, time: '昨天 18:30', status: 'interview' },
-    { id: 4, name: '刘婷', college: '文学院', clubId: 4, clubName: '吉他社', matchScore: 79, time: '昨天 14:20', status: 'admitted' },
-    { id: 5, name: '陈杰', college: '体育学院', clubId: 1, clubName: '篮球社', matchScore: 85, time: '2天前', status: 'submitted' },
+    ...BASE_MOCK,
     ...applications.map((app, i) => ({
-      id: 100 + i,
+      id: 200 + i,
       name: '张小明',
       college: '计算机学院',
-      clubId: app.clubId,
       clubName: app.clubName,
-      matchScore: Math.floor(Math.random() * 30 + 65),
+      matchScore: 65 + (i % 30),
       time: app.appliedAt,
       status: app.status,
     })),
